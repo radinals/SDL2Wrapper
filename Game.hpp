@@ -10,7 +10,7 @@
 
 class Game_t {
 public:
-    Game_t() {};
+    explicit Game_t() { initSDL(); };
     virtual ~Game_t();
 
     int  run();

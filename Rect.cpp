@@ -1,13 +1,12 @@
 #include "Rect.hpp"
 #include "Point.hpp"
-#include "RectF.hpp"
+#include "Algorithms.hpp"
 #include <SDL2/SDL_rect.h>
 
 Point_t
 Rect_t::getCenter() const
 {
-    // FIXME DIV BY ZERO CHECK
-    return Point_t(x + (w / 2.0), y + (h / 2.0));
+    return Point_t(x + Algorithms::getHalf(w), y + Algorithms::getHalf(h));
 }
 
 Point_t
