@@ -7,10 +7,10 @@
 #include "PointF.hpp"
 
 namespace Collision {
-    bool checkAABB(const Rect_t& A, Rect_t& B);
-    bool checkAABB(const RectF_t& A, RectF_t& B);
-    bool checkAABB(const Point_t& aMin, Point_t& aMax, Point_t& bMin, Point_t& bMax);
-    bool checkAABB(const PointF_t& aMin, PointF_t& aMax, PointF_t& bMin, PointF_t& bMax);
+    bool checkAABB(const Rect_t& A,  const Rect_t& B);
+    bool checkAABB(const RectF_t& A, const RectF_t& B);
+    bool checkAABB(const Point_t& aMin,  const Point_t& aMax,  const Point_t& bMin,  const Point_t& bMax);
+    bool checkAABB(const PointF_t& aMin, const PointF_t& aMax, const PointF_t& bMin, const PointF_t& bMax);
 };
 
 #endif // !COLLISION_HPP
