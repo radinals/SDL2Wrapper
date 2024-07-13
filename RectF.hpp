@@ -10,6 +10,11 @@ public:
     RectF_t() : SDL_FRect { 0, 0, 0, 0 } { }
     RectF_t(float x, float y, float w, float h) : SDL_FRect { x, y, w, h } { }
 
+    bool operator==(const RectF_t& other)
+    {
+        return x == other.x && y == other.y && w == other.w && h == other.h;
+    }
+
     PointF_t getCenter() const;
     PointF_t getTopLeft() const;
     PointF_t getTopRight() const;
