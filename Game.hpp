@@ -7,6 +7,7 @@
 #include "Size.hpp"
 #include "Window.hpp"
 #include <SDL2/SDL_events.h>
+#include <cstdint>
 
 class Game_t {
 public:
@@ -22,7 +23,7 @@ public:
     virtual void initSDL();
 
 private:
-    int     m_frame_rate = 1000 / 15;
+    uint32_t m_frame_rate = 1000 / 15;
     int     m_exit_code  = 0;
     bool    m_run        = false;
     Color_t m_background_color;
