@@ -6,6 +6,8 @@
 #include "Rect.hpp"
 
 namespace Algorithms {
+    // std::list<Point_t> bresenhamLine(const Point_t&, const Point_t&);
+
     // check for the biggest number before subtracting a with b
     inline constexpr int maxSubtract(int a,int b) {
         return (a > b) ? (a-b) : (b-a);

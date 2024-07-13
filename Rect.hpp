@@ -4,11 +4,13 @@
 #include <SDL2/SDL_rect.h>
 
 #include "Point.hpp"
+#include "Size.hpp"
 
 class Rect_t : public SDL_Rect {
 public:
     Rect_t() : SDL_Rect { 0, 0, 0, 0 } { }
     Rect_t(int x, int y, int w, int h) : SDL_Rect { x, y, w, h } { }
+    Rect_t(const Point_t& pos, const Size_t& sz) : SDL_Rect { pos.x, pos.y, sz.w, sz.h } { }
 
     bool operator==(const Rect_t& other)
     {

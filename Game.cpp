@@ -10,6 +10,7 @@
 #include "Color.hpp"
 #include "Renderer.hpp"
 #include "Window.hpp"
+#include <iostream>
 #include <sched.h>
 
 #include "Game.hpp"
@@ -40,6 +41,7 @@ Game_t::run()
         m_renderer->present();
 
         uint32_t frame_time = SDL_GetTicks() - frame_start;
+        std::cout << "FRAME_TIME: " << frame_time << '\n';
 
         if (frame_time < m_frame_rate) { SDL_Delay(m_frame_rate - frame_time); }
     }

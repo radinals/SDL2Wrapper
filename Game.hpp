@@ -22,14 +22,16 @@ public:
     virtual void initSDL();
 
 private:
-    int     m_frame_rate = 1000 / 15;
+    unsigned int     m_frame_rate = 1000 / 5;
     int     m_exit_code  = 0;
     bool    m_run        = false;
     Color_t m_background_color;
 
-protected:
     Window_t   *m_window   = nullptr;
     Renderer_t *m_renderer = nullptr;
+
+protected:
+    Renderer_t& renderer() {return *m_renderer;}
 
 protected:
     void         setBackgroundColor(const Color_t &);

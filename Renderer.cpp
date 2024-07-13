@@ -5,6 +5,8 @@
 #include "Rect.hpp"
 #include "RectF.hpp"
 #include "Size.hpp"
+#include "Circle.hpp"
+#include "Triangle.hpp"
 
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_rect.h>
@@ -52,6 +54,15 @@ Renderer_t::setColor(const Color_t& color)
                            color.getA());
 }
 
+void Renderer_t::setColor(const char color[]) {
+    Color_t clr(color);
+    SDL_SetRenderDrawColor(m_renderer,
+                           clr.getR(),
+                           clr.getG(),
+                           clr.getB(),
+                           clr.getA());
+}
+
 void
 Renderer_t::drawLine(const Point_t& source, const Point_t& dest)
 {
@@ -62,6 +73,10 @@ void
 Renderer_t::drawLine(const PointF_t& source, const PointF_t& dest)
 {
     SDL_RenderDrawLineF(m_renderer, source.x, source.y, dest.x, dest.y);
+}
+
+void Renderer_t::drawLine(int src_x, int src_y, int dest_x, int dest_y) {
+    SDL_RenderDrawLine(m_renderer, src_x, src_y, dest_x, dest_y);
 }
 
 void
@@ -86,6 +101,11 @@ void
 Renderer_t::drawPoint(const PointF_t& point)
 {
     SDL_RenderDrawPointF(m_renderer, point.x, point.y);
+}
+
+void Renderer_t::drawPoint(int x,int y) {
+
+    SDL_RenderDrawPoint(m_renderer, x, y);
 }
 
 void
@@ -125,6 +145,10 @@ Renderer_t::drawRects(const Rect_t rects[], int count)
     SDL_RenderDrawRects(m_renderer, rects, count);
 }
 
+void Renderer_t::drawRect(int sx,int sy, int w, int h) {
+    drawRect(Rect_t(sx,sy,w,h));
+}
+
 void
 Renderer_t::drawRects(const RectF_t rects[], int count)
 {
@@ -160,4 +184,14 @@ void
 Renderer_t::drawFillRects(const RectF_t rects[], int count)
 {
     SDL_RenderFillRectsF(m_renderer, rects, count);
+}
+
+void Renderer_t::drawCircle(const Circle_t& circle) {
+
+}
+
+void Renderer_t::drawTriangle(const Triangle_t& triangle) {
+    drawLine(triangle.getBottomLeft(),triangle.getTop());
+    drawLine(triangle.getBottomRight(),triangle.getTop());
+    drawLine(triangle.getBottomLeft(),triangle.getBottomRight());
 }
