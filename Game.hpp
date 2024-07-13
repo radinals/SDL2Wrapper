@@ -27,12 +27,13 @@ private:
     int     m_exit_code  = 0;
     bool    m_run        = false;
     Color_t m_background_color;
-
-protected:
     Window_t   *m_window   = nullptr;
     Renderer_t *m_renderer = nullptr;
 
 protected:
+    Renderer_t& renderer() { return *m_renderer; }
+    Window_t& window() { return *m_window; }
+
     void         setBackgroundColor(const Color_t &);
     virtual void eventDispatch(const SDL_Event *const);
     virtual void onKeyPressEvent(const SDL_Keysym &) { }
