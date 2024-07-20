@@ -11,6 +11,8 @@
 #include "Size.hpp"
 #include "Circle.hpp"
 #include "Triangle.hpp"
+#include "Texture.hpp"
+#include "Sprite.hpp"
 
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_rect.h>
@@ -23,10 +25,11 @@ public:
     Renderer_t(SDL_Renderer*);
     ~Renderer_t();
 
-    SDL_Renderer*& getRenderer();
+    SDL_Renderer* getRenderer() { return m_renderer; }
 
     void clear();
     void present();
+    SDL_RendererInfo getInfo() const;
 
     void setColor(int, int, int, int);
     void setColor(const Color_t&);
@@ -64,6 +67,18 @@ public:
 
     void drawCircle(const Circle_t&);
     void drawTriangle(const Triangle_t&);
+    void renderCopy(const Texture_t&,
+                    const Rect_t* src_rect=nullptr,
+                    const Rect_t* dst_rect=nullptr);
+
+    void renderCopyEx(const Texture_t&,
+                    const Rect_t* src_rect=nullptr,
+                    const Rect_t* dst_rect=nullptr,
+                    double angle=0,
+                    const Point_t* center=nullptr,
+                    SDL_RendererFlip flip=SDL_RendererFlip::SDL_FLIP_NONE);
+
+    void drawSprite(const Sprite_t&, const Rect_t* render_dst=nullptr);
 
     // void renderGeometry();
 

@@ -6,46 +6,56 @@
 #include <SDL2/SDL_surface.h>
 #include <cstdint>
 #include <string>
-#include "Renderer.hpp"
+#include "Rect.hpp"
+#include "Color.hpp"
 #include "Size.hpp"
 #include <tuple>
+#include <iostream>
+
+class Renderer_t;
 
 class Texture_t {
     public:
-        Texture_t();
+        explicit Texture_t() {};
 
-        Texture_t(const Renderer_t& renderer, uint32_t format, SDL_TextureAccess access,
+        explicit Texture_t(Renderer_t& renderer, uint32_t format, SDL_TextureAccess access,
                   int w, int h, SDL_ScaleMode mode=SDL_ScaleModeLinear);
 
-        Texture_t(const Renderer_t& renderer, uint32_t format, SDL_TextureAccess access,
+        explicit Texture_t(Renderer_t& renderer, uint32_t format, SDL_TextureAccess access,
                   const Size_t& sz, SDL_ScaleMode mode=SDL_ScaleModeLinear);
 
-        Texture_t(const Renderer_t& renderer, std::string path);
+        explicit Texture_t(Renderer_t& renderer, std::string path);
 
-        ~Texture_t() { SDL_DestroyTexture(m_texture); }
+        Texture_t(Texture_t &&) noexcept;
+        Texture_t(Texture_t &);
 
-        void loadImage(const std::string& path);
+        Texture_t& operator=(Texture_t&);
+        Texture_t& operator=(Texture_t&&);
 
-        void createTexture(SDL_TextureAccess, uint32_t, int, int,
-                           SDL_ScaleMode mode = SDL_ScaleModeLinear);
+        ~Texture_t() { std::cout <<(m_texture == nullptr ? "Empty " : "") << "TEXTURE DESTROYED" << '\n'; SDL_DestroyTexture(m_texture); }
+
+        void loadBitmap(Renderer_t&, const std::string& path);
+        // void loadImage(Renderer_t&, const std::string& path);
+
+        void createTexture(Renderer_t& renderer,
+                           uint32_t format, int access, int w, int h,
+                           SDL_ScaleMode scale_method = SDL_ScaleModeLinear);
 
         void setColorMod(int r, int g, int b);
         void setAlphaMod(uint8_t a);
+        void setColorRGBAMod(const Color_t& rgba);
         void setBlendMode(SDL_BlendMode);
         void setScaleMode(SDL_ScaleMode);
 
         int getAlphaMod();
-        SDL_BlendMode getBlendMode();
-        std::tuple<int,int,int> getColorMod();
-        SDL_ScaleMode getScaleMode();
+        SDL_BlendMode getBlendMode() const;
+        std::tuple<int,int,int> getColorMod() const;
+        SDL_ScaleMode getScaleMode() const;
 
-        SDL_Texture* getTexture() { return m_texture; }
-
-        void render(const Size_t* src_sz=nullptr,  const Size_t* dst_sz=nullptr, double angle=0, const Point_t* center=nullptr);
+        SDL_Texture*const getTexture() const { return m_texture; }
 
     protected:
         SDL_Texture* m_texture = nullptr;
-        Renderer_t m_renderer;
 };
 
 #endif // !TEXTURE_HPP

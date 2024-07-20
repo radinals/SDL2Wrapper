@@ -2,39 +2,72 @@
 #define SPRITE_HPP
 
 #include <SDL2/SDL_render.h>
+#include <iostream>
 #include <string>
-#include "Point.hpp"
-#include "Size.hpp"
-#include "Renderer.hpp"
+#include "Rect.hpp"
 #include "Texture.hpp"
 
 class Sprite_t {
     public:
-        enum class SpriteFlip { NONE, HORIZONTAL, VERTICAL };
+        explicit Sprite_t() {};
 
-        Sprite_t(const Renderer_t& renderer, const std::string&filepath) {
-            m_texture = Texture_t(renderer,filepath);
+        explicit Sprite_t(Renderer_t& renderer,
+                          const std::string& path,
+                          int max_frame_count,
+                          const Size_t& size = Size_t(0,0),
+                          const Point_t& startpos = Point_t(0,0));
+
+        explicit Sprite_t(Sprite_t& other);
+        explicit Sprite_t(Sprite_t&& other);
+
+        virtual ~Sprite_t() {};
+
+        Sprite_t& operator=(Sprite_t& other) {
+            std::cout << "CPY = \n";
+            m_texture = other.m_texture;
+            m_frame = other.m_frame;
+            m_rotate_angle = other.m_rotate_angle;
+            m_flip = other.m_flip;
+            m_max_frame_count = other.m_max_frame_count;
+            return *this;
         }
 
-        Sprite_t(const Size_t& size, const std::string& filepath, Renderer_t renderer) {
-            m_texture = Texture_t(renderer,filepath);
+        Sprite_t& operator=(Sprite_t&& other ){
+            m_texture = std::move(other.m_texture);
+            m_frame = std::move(other.m_frame);
+            m_rotate_angle = other.m_rotate_angle;
+            m_flip = other.m_flip;
+            m_max_frame_count = other.m_max_frame_count;
+            return *this;
         }
 
-        int getCurrentFrame() { return m_frame; }
-        int getCurrentRow() { return m_row; }
+        void setFrameSize(int w, int h) {m_frame.w = w; m_frame.h = h; }
+        void setFramePos(int x, int y) {m_frame.x = x; m_frame.y = y; }
 
-        void setCurrentFrame(int frame) {m_frame = frame;}
-        void setCurrentRow(int row) {m_row = row;}
+        void setFrameSize(Size_t sz) { setFrameSize(sz.w,sz.h); }
+        void setFramePos(Point_t pos) {setFramePos(pos.x,pos.y); }
 
-        void draw(int x, int y, int w, int h, SDL_RendererFlip flip=SDL_FLIP_NONE, int force_index=-1);
-        void draw(const Point_t& pos, const Size_t& sz, SDL_RendererFlip flip=SDL_FLIP_NONE, int force_index=-1);
+        void setFrame(unsigned int n=0);
+        void next(unsigned int n=1);
+        void prev(unsigned int n=1);
+        void flipHorizontal();
+        void flipVertical();
+        void rotate(int angle=0);
+        Texture_t& texture() { return m_texture; }
+
+        Rect_t getFrameRect() const { return m_frame; }
+        Size_t getFrameSize() const { return m_frame.getSize(); }
+        Point_t getFrameStartPos() const { return m_frame.getPoint(); }
+        SDL_RendererFlip getFlip() const { return m_flip; }
+        int getRotationAngle() const { return m_rotate_angle; }
+        const Texture_t& getTexture() const { return m_texture; }
 
     protected:
         Texture_t m_texture;
-        Size_t m_size;
-        Point_t m_pos;
-        int m_frame = -1;
-        int m_row   = -1;
+        int m_rotate_angle = 0;
+        int m_max_frame_count = 0;
+        Rect_t m_frame;
+        SDL_RendererFlip m_flip = SDL_RendererFlip::SDL_FLIP_NONE;
 };
 
-#endif // !SPRITE_HPP
+#endif // !SPRITE_HPp

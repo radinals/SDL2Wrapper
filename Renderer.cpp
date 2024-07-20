@@ -10,6 +10,8 @@
 
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_rect.h>
+#include <cassert>
+#include <iostream>
 #include <SDL2/SDL_render.h>
 
 Renderer_t::Renderer_t(SDL_Window* window, int index, uint32_t flags)
@@ -19,18 +21,23 @@ Renderer_t::Renderer_t(SDL_Window* window, int index, uint32_t flags)
 
 Renderer_t::Renderer_t(SDL_Renderer* renderer) { m_renderer = renderer; }
 
-Renderer_t::~Renderer_t() { SDL_DestroyRenderer(m_renderer); }
+Renderer_t::~Renderer_t() { std::cout << "RENDERER DESTROYED\n"; SDL_DestroyRenderer(m_renderer); }
 
-SDL_Renderer*&
-Renderer_t::getRenderer()
-{
-    return m_renderer;
+SDL_RendererInfo
+Renderer_t::getInfo() const {
+   SDL_RendererInfo info;
+   SDL_GetRendererInfo(m_renderer, &info);
+   return info;
 }
 
 void
 Renderer_t::clear()
 {
-    SDL_RenderClear(m_renderer);
+    int e = SDL_RenderClear(m_renderer);
+    if (e != 0) {
+        std::cout << "CLEAR ERROR: " << SDL_GetError() << '\n';
+        exit(0);
+    }
 }
 void
 Renderer_t::present()
@@ -41,7 +48,11 @@ Renderer_t::present()
 void
 Renderer_t::setColor(int r, int g, int b, int a)
 {
-    SDL_SetRenderDrawColor(m_renderer, r, g, b, a);
+    int e = SDL_SetRenderDrawColor(m_renderer, r, g, b, a);
+    if (e != 0) {
+        std::cout << "SET COLOR ERROR: " << SDL_GetError() << '\n';
+        exit(0);
+    }
 }
 
 void
@@ -194,4 +205,38 @@ void Renderer_t::drawTriangle(const Triangle_t& triangle) {
     drawLine(triangle.getBottomLeft(),triangle.getTop());
     drawLine(triangle.getBottomRight(),triangle.getTop());
     drawLine(triangle.getBottomLeft(),triangle.getBottomRight());
+}
+
+void Renderer_t::renderCopy(const Texture_t& texture,
+                            const Rect_t* src_rect,
+                            const Rect_t* dst_rect)
+{
+    SDL_RenderCopy(m_renderer, texture.getTexture(), src_rect, dst_rect);
+};
+
+void Renderer_t::renderCopyEx(const Texture_t& texture,
+                const Rect_t* src_rect,
+                const Rect_t* dst_rect,
+                double angle,
+                const Point_t* center,
+                SDL_RendererFlip flip)
+{
+    int e = SDL_RenderCopyEx(m_renderer,
+                     texture.getTexture(),
+                     src_rect, dst_rect,
+                     angle, center,
+                     flip);
+    if (e != 0) {
+        std::cout << "RENDERCOPYEX ERROR: " << SDL_GetError() << '\n';
+        exit(0);
+    }
+}
+
+void Renderer_t::drawSprite(const Sprite_t& sprite, const Rect_t* render_dst) {
+    Rect_t frame_rect = sprite.getFrameRect();
+    Point_t frame_rect_center = sprite.getFrameRect().getCenter();
+    renderCopyEx(sprite.getTexture(), &frame_rect, render_dst,
+                 sprite.getRotationAngle(),
+                 nullptr, sprite.getFlip());
+    std::cout << "R: " << frame_rect.w << 'X' << frame_rect.h << '\n';
 }

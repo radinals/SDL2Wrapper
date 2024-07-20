@@ -31,7 +31,8 @@ private:
     Renderer_t *m_renderer = nullptr;
 
 protected:
-    Renderer_t& renderer() {return *m_renderer;}
+    Renderer_t*& renderer() { return m_renderer;}
+    Window_t*& window() { return m_window; }
 
 protected:
     void         setBackgroundColor(const Color_t &);
