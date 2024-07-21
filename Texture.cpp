@@ -42,7 +42,7 @@ Texture_t& Texture_t::operator=(Texture_t& other) {
     return *this;
 }
 
-Texture_t& Texture_t::operator=(Texture_t&& other) {
+Texture_t& Texture_t::operator=(Texture_t&& other) noexcept {
     std::cout << "MOV = \n";
     if (this != &other) {
         m_texture = other.m_texture;

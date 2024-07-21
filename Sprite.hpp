@@ -18,7 +18,7 @@ class Sprite_t {
                           const Point_t& startpos = Point_t(0,0));
 
         explicit Sprite_t(Sprite_t& other);
-        explicit Sprite_t(Sprite_t&& other);
+        explicit Sprite_t(Sprite_t&& other) noexcept;
 
         virtual ~Sprite_t() {};
 

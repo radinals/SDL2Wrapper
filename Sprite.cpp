@@ -21,7 +21,7 @@ Sprite_t::Sprite_t(Sprite_t& other) {
     m_flip = other.m_flip;
 }
 
-Sprite_t::Sprite_t(Sprite_t&& other) {
+Sprite_t::Sprite_t(Sprite_t&& other) noexcept {
     m_texture = std::move(other.m_texture);
     m_frame = std::move(other.m_frame);
     m_rotate_angle = other.m_rotate_angle;

@@ -6,7 +6,6 @@
 #include <SDL2/SDL_surface.h>
 #include <cstdint>
 #include <string>
-#include "Rect.hpp"
 #include "Color.hpp"
 #include "Size.hpp"
 #include <tuple>
@@ -30,7 +29,7 @@ class Texture_t {
         Texture_t(Texture_t &);
 
         Texture_t& operator=(Texture_t&);
-        Texture_t& operator=(Texture_t&&);
+        Texture_t& operator=(Texture_t&&) noexcept;
 
         ~Texture_t() { std::cout <<(m_texture == nullptr ? "Empty " : "") << "TEXTURE DESTROYED" << '\n'; SDL_DestroyTexture(m_texture); }
 
