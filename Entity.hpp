@@ -2,74 +2,71 @@
 #define ENTITY_HPP
 
 #include "Point.hpp"
+#include "Renderer.hpp"
 #include "Size.hpp"
 #include "Rect.hpp"
 #include "Sprite.hpp"
 #include <string>
+#include <cassert>
 
 class Entity_t {
     public:
         Entity_t() {}
 
         Entity_t(const Point_t& pos,
-                     const Size_t& sz,
-                     const std::string& sprite_path,
-                     const Renderer_t& renderer)
-                     : m_pos(pos), m_size(sz)
+                 const Size_t& sz,
+                 Sprite_t*& sprite)
+                 : m_entity_area(pos,sz)
         {
-            m_sprite = new Sprite_t(sz,sprite_path,renderer);
+            if (sprite != nullptr) {
+                m_sprite = sprite;
+                m_ext_sprite = true;
+            } else {
+                exit(1);
+            }
         }
 
         Entity_t(const Point_t& pos,
-                     const Size_t& sz,
-                     Sprite_t* sprite=nullptr)
-                     : m_pos(pos), m_size(sz), m_sprite(sprite){}
+                 const Size_t& sz,
+                 const std::string& sprite_path,
+                 Renderer_t& renderer,
+                 int max_frame_count)
+                 : m_entity_area(pos,sz)
+        {
+            m_sprite = new Sprite_t(renderer,sprite_path,max_frame_count,sz,pos); // create the spritesheet k
+        }
 
         virtual ~Entity_t() {
-            delete m_sprite;
+            if (!m_ext_sprite) {
+                delete m_sprite;
+            }
         }
 
-        void setPos(const Point_t& pos) {
-            m_pos = pos;
+        Rect_t& Rect() {
+            return m_entity_area;
         }
 
-        void setSize(const Size_t& size) {
-            m_size = size;
+        const Rect_t& Rect() const {
+            return m_entity_area;
         }
 
-        const Point_t& getPos() const {
-            return m_pos;
-        }
-
-        const Size_t& getSize() const {
-            return m_size;
-        }
-
-        Rect_t getRect() const{
-            return Rect_t(m_pos,m_size);
-        }
-
-        Point_t& pos() {
-            return m_pos;
-        }
-
-        Size_t& size() {
-            return m_size;
-        }
-
-        Sprite_t*& sprite() {
+        Sprite_t*& Sprite() {
             return m_sprite;
         }
 
-        void destroy() {
-            m_pos       = Point_t(0,0);
-            m_size      = Size_t(0,0);
-            m_enabled   = false;
-            delete m_sprite;
+        const Sprite_t& Sprite() const {
+            return *m_sprite;
         }
 
-        void draw() {
+        void hide() {
+            m_enabled   = false;
+        }
 
+        void draw(Renderer_t& renderer) {
+            if (m_enabled) {  
+                m_sprite->getFrameRect();
+                renderer.drawSprite(*m_sprite, &m_entity_area);
+            }
         }
 
         void disable() { m_enabled = false; }
@@ -78,9 +75,9 @@ class Entity_t {
         bool isEnabled() const { return m_enabled; };
 
     protected:
-        Sprite_t* m_sprite = nullptr;
-        Point_t m_pos;
-        Size_t m_size;
+        bool m_ext_sprite = false;
+        Sprite_t*  m_sprite = nullptr;
+        Rect_t m_entity_area;
         bool m_enabled = true;
 };
 

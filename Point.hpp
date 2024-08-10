@@ -6,7 +6,7 @@
 class Point_t : public SDL_Point {
 public:
     explicit Point_t() : SDL_Point { 0, 0 } { }
-    explicit Point_t(int x, int y) : SDL_Point { x, y } { }
+    explicit Point_t(int _x, int _y) : SDL_Point { _x, _y } { }
 
     Point_t operator+(const Point_t &other) const
     {

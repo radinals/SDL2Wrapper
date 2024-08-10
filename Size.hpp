@@ -8,6 +8,10 @@ public:
     Size_t(const Size_t &);
 
     int w = 0, h = 0;
+
+    bool operator==(const Size_t& other) const {
+        return other.w == w && other.h == h;
+    }
 };
 
 #endif    // !SIZE_HPP

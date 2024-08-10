@@ -54,6 +54,8 @@ Game_t::initSDL()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0) { exit(0); }
 
+    // TODO: move to be constructor arguments
+    
     m_window = new Window_t(DEFAULT_WINDOW_NAME,
                             SDL_WINDOWPOS_UNDEFINED,
                             SDL_WINDOWPOS_UNDEFINED,
@@ -61,12 +63,12 @@ Game_t::initSDL()
                             DEFAULT_HEIGHT,
                             SDL_WINDOW_SHOWN);
 
-    if (!m_window->getWindow()) { exit(0); }
+    if (m_window->getWindow() == nullptr) { exit(0); }
 
     m_renderer
         = new Renderer_t(m_window->getWindow(), -1, SDL_RENDERER_ACCELERATED);
 
-    if (!m_renderer->getRenderer()) { exit(0); }
+    if (m_renderer->getRenderer() == nullptr) { exit(0); }
 }
 
 void

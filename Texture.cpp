@@ -1,11 +1,10 @@
 #include "Texture.hpp"
+#include "Renderer.hpp"
+
 #include <SDL2/SDL_error.h>
-#include <cassert>
 #include <SDL2/SDL_render.h>
 #include <SDL2/SDL_image.h>
-#include <cstddef>
-#include <iostream>
-#include "Renderer.hpp"
+#include <cassert>
 
 Texture_t::Texture_t(Renderer_t&renderer, uint32_t format, SDL_TextureAccess access,
                      int w, int h, SDL_ScaleMode mode)
@@ -23,19 +22,17 @@ Texture_t::Texture_t(Renderer_t& renderer, std::string path) {
 }
 
 Texture_t::Texture_t(Texture_t && other) noexcept {
-    std::cout << "MOV\n";
     m_texture = other.m_texture;
     other.m_texture = nullptr;
 }
 
-Texture_t::Texture_t(Texture_t & other) {
-    std::cout << "CPY\n";
+Texture_t::Texture_t(const Texture_t & other) {
     m_texture = other.m_texture;
 }
 
-Texture_t& Texture_t::operator=(Texture_t& other) {
-    std::cout << "CPY = \n";
+Texture_t& Texture_t::operator=(const Texture_t& other) {
     if (this != &other) {
+        // destroying the old exsisting texture
         SDL_DestroyTexture(m_texture);
         m_texture = other.m_texture;
     }
@@ -43,8 +40,8 @@ Texture_t& Texture_t::operator=(Texture_t& other) {
 }
 
 Texture_t& Texture_t::operator=(Texture_t&& other) noexcept {
-    std::cout << "MOV = \n";
     if (this != &other) {
+        SDL_DestroyTexture(m_texture);
         m_texture = other.m_texture;
         other.m_texture = nullptr;
     }
@@ -56,27 +53,14 @@ void Texture_t::loadBitmap(Renderer_t& renderer, const std::string& path) {
 
     SDL_Surface *tmp = SDL_LoadBMP(path.c_str());
 
-    if (tmp == NULL) {
-        std::cout << "failed to create surface for bitmap: " << path << ".\n";
-        return;
-    }
-
-    assert(tmp);
+    assert(tmp != nullptr);
 
     m_texture = SDL_CreateTextureFromSurface(renderer.getRenderer(), tmp);
     SDL_FreeSurface(tmp);
 
-    if (m_texture == NULL) {
-        std::cout << "failed to create texture for bitmap: " << path << ".\n";
-        return;
-    }
-
-    assert(m_texture);
-
+    assert(m_texture != nullptr);
 
     assert(renderer.getRenderer() != nullptr);
-
-    std::cout << "ERR: " << SDL_GetError() << '\n';
 }
 
 void Texture_t::setScaleMode(SDL_ScaleMode mode) {
@@ -111,7 +95,7 @@ void Texture_t::setBlendMode(SDL_BlendMode mode) {
 }
 
 int Texture_t::getAlphaMod() {
-    uint8_t a;
+    uint8_t a = 0;
     SDL_GetTextureAlphaMod(m_texture, &a);
     return a;
 }
@@ -123,7 +107,7 @@ SDL_BlendMode Texture_t::getBlendMode() const {
 }
 
 std::tuple<int,int,int> Texture_t::getColorMod() const {
-    uint8_t r, g, b;
+    uint8_t r = 0, g = 0, b = 0;
     SDL_GetTextureColorMod(m_texture, &r, &g, &b);
     return std::tuple<int,int,int>(r,g,b);
 }

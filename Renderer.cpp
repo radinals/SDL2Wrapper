@@ -10,9 +10,8 @@
 
 #include <SDL2/SDL_error.h>
 #include <SDL2/SDL_rect.h>
-#include <cassert>
-#include <iostream>
 #include <SDL2/SDL_render.h>
+#include <cassert>
 
 Renderer_t::Renderer_t(SDL_Window* window, int index, uint32_t flags)
 {
@@ -21,7 +20,7 @@ Renderer_t::Renderer_t(SDL_Window* window, int index, uint32_t flags)
 
 Renderer_t::Renderer_t(SDL_Renderer* renderer) { m_renderer = renderer; }
 
-Renderer_t::~Renderer_t() { std::cout << "RENDERER DESTROYED\n"; SDL_DestroyRenderer(m_renderer); }
+Renderer_t::~Renderer_t() { SDL_DestroyRenderer(m_renderer); }
 
 SDL_RendererInfo
 Renderer_t::getInfo() const {
@@ -34,10 +33,7 @@ void
 Renderer_t::clear()
 {
     int e = SDL_RenderClear(m_renderer);
-    if (e != 0) {
-        std::cout << "CLEAR ERROR: " << SDL_GetError() << '\n';
-        exit(0);
-    }
+    assert(e == 0);
 }
 void
 Renderer_t::present()
@@ -49,10 +45,7 @@ void
 Renderer_t::setColor(int r, int g, int b, int a)
 {
     int e = SDL_SetRenderDrawColor(m_renderer, r, g, b, a);
-    if (e != 0) {
-        std::cout << "SET COLOR ERROR: " << SDL_GetError() << '\n';
-        exit(0);
-    }
+    assert(e == 0);
 }
 
 void
@@ -211,7 +204,8 @@ void Renderer_t::renderCopy(const Texture_t& texture,
                             const Rect_t* src_rect,
                             const Rect_t* dst_rect)
 {
-    SDL_RenderCopy(m_renderer, texture.getTexture(), src_rect, dst_rect);
+    int e = SDL_RenderCopy(m_renderer, texture.getTexture(), src_rect, dst_rect);
+    assert(e == 0);
 };
 
 void Renderer_t::renderCopyEx(const Texture_t& texture,
@@ -226,17 +220,12 @@ void Renderer_t::renderCopyEx(const Texture_t& texture,
                      src_rect, dst_rect,
                      angle, center,
                      flip);
-    if (e != 0) {
-        std::cout << "RENDERCOPYEX ERROR: " << SDL_GetError() << '\n';
-        exit(0);
-    }
+    assert(e == 0);
 }
 
 void Renderer_t::drawSprite(const Sprite_t& sprite, const Rect_t* render_dst) {
     Rect_t frame_rect = sprite.getFrameRect();
-    Point_t frame_rect_center = sprite.getFrameRect().getCenter();
     renderCopyEx(sprite.getTexture(), &frame_rect, render_dst,
                  sprite.getRotationAngle(),
                  nullptr, sprite.getFlip());
-    std::cout << "R: " << frame_rect.w << 'X' << frame_rect.h << '\n';
 }

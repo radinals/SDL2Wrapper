@@ -9,7 +9,6 @@
 #include "Color.hpp"
 #include "Size.hpp"
 #include <tuple>
-#include <iostream>
 
 class Renderer_t;
 
@@ -26,12 +25,12 @@ class Texture_t {
         explicit Texture_t(Renderer_t& renderer, std::string path);
 
         Texture_t(Texture_t &&) noexcept;
-        Texture_t(Texture_t &);
+        Texture_t(const Texture_t &);
 
-        Texture_t& operator=(Texture_t&);
         Texture_t& operator=(Texture_t&&) noexcept;
+        Texture_t& operator=(const Texture_t&);
 
-        ~Texture_t() { std::cout <<(m_texture == nullptr ? "Empty " : "") << "TEXTURE DESTROYED" << '\n'; SDL_DestroyTexture(m_texture); }
+        ~Texture_t() { SDL_DestroyTexture(m_texture); }
 
         void loadBitmap(Renderer_t&, const std::string& path);
         // void loadImage(Renderer_t&, const std::string& path);
