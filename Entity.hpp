@@ -15,7 +15,7 @@ class Entity_t {
 
         Entity_t(const Point_t& pos,
                  const Size_t& sz,
-                 Sprite_t*& sprite)
+                 Sprite_t* sprite)
                  : m_entity_area(pos,sz)
         {
             if (sprite != nullptr) {

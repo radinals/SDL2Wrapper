@@ -18,8 +18,13 @@ class Sprite_t {
         explicit Sprite_t(Renderer_t& renderer,
                           const std::string& path,
                           int max_frame_count,
-                          const Size_t& size = Size_t(0,0),
-                          const Point_t& startpos = Point_t(0,0));
+                          const Size_t& size,
+                          const Point_t& startpos);
+
+        explicit Sprite_t(Renderer_t& renderer,
+                          const std::string& path,
+                          int max_frame_count,
+                          int x, int y, int w, int h);
 
         explicit Sprite_t(Sprite_t& other);
         explicit Sprite_t(Sprite_t&& other) noexcept;

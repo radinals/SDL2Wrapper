@@ -12,6 +12,16 @@ Sprite_t::Sprite_t(Renderer_t& renderer,
     m_texture = new Texture_t(renderer,path);
 }
 
+Sprite_t::Sprite_t(Renderer_t& renderer,
+                  const std::string& path,
+                  int max_frame_count,
+                  int x, int y, int w, int h)
+{
+    m_max_frame_count = max_frame_count;
+    m_frame_rect = Rect_t(x,y,w,h);
+    m_texture = new Texture_t(renderer,path);
+}
+
 Sprite_t::Sprite_t(Sprite_t& other) {
     m_texture = other.m_texture;
     m_frame_rect = other.m_frame_rect;
